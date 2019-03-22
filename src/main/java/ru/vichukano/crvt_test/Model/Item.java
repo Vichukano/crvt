@@ -10,8 +10,7 @@ public class Item {
 
     }
 
-    public Item(long id, String phone, String fio, String company) {
-        this.id = id;
+    public Item(String phone, String fio, String company) {
         this.phone = phone;
         this.fio = fio;
         this.company = company;

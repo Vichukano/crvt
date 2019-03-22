@@ -1,51 +1,34 @@
 package ru.vichukano.crvt_test.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.hsmf.MAPIMessage;
-import org.apache.poi.hsmf.exceptions.ChunkNotFoundException;
+import org.springframework.stereotype.Component;
+import ru.vichukano.crvt_test.Model.Item;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MsgParser {
-    private File file;
+@Component
+public class MsgPlaneParser {
 
-    public MsgParser() {
+    public MsgPlaneParser() {
 
     }
 
-    public String parsePlainMsg(File file) {
-        String plain = "";
-        try (InputStream in = new FileInputStream(file)) {
-            MAPIMessage message = new MAPIMessage(in);
-            plain = message.getTextBody();
-        } catch (ChunkNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
-        return plain;
+    public Item convertPlainTextToObject(String plain) {
+        return new Item(
+                this.getPhone(plain),
+                this.getName(plain),
+                this.getCompany(plain)
+        );
     }
 
-    public String convertPlainTextToJson(String plain) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-        map.put("fio", this.getName(plain));
-        map.put("company", this.getCompany(plain));
-        map.put("phone", this.getPhone(plain));
-        return mapper.writeValueAsString(map);
-    }
-
-    public String getPhone(String plain) {
+    private String getPhone(String plain) {
         Pattern phonePattern = Pattern.compile("((7)|(8)|(9))[0-9]{9}");
         Matcher phoneMatcher = phonePattern.matcher(plain);
         StringBuilder sb = new StringBuilder();
         while (phoneMatcher.find()) {
             sb.append(phoneMatcher.group());
         }
-        String phone = sb.substring(0, 10);
+        String phone = sb.toString();
         return phone;
 
     }
@@ -55,7 +38,7 @@ public class MsgParser {
      * @param plain
      * @return
      */
-    public String getCompany(String plain) {
+    private String getCompany(String plain) {
         Pattern companyPattern = Pattern.compile("((ОРГАНИЗАЦ)|(организац)).*");
         Matcher companyMatcher = companyPattern.matcher(plain);
         StringBuilder sb = new StringBuilder();
@@ -72,7 +55,7 @@ public class MsgParser {
      * @param plain
      * @return
      */
-    public String getName(String plain) {
+    private String getName(String plain) {
         Pattern namePattern = Pattern.compile("((Ф.И.О.)|(ФИО)|(фио)).*");
         Matcher nameMatcher = namePattern.matcher(plain);
         StringBuilder sb = new StringBuilder();
@@ -82,13 +65,5 @@ public class MsgParser {
         String name = sb.substring(sb.indexOf(":") + 1, sb.length());
         name = name.replace(" ", "").replace(".", "");
         return name;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
     }
 }

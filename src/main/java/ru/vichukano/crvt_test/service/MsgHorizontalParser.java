@@ -1,41 +1,20 @@
 package ru.vichukano.crvt_test.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.hsmf.MAPIMessage;
-import org.apache.poi.hsmf.exceptions.ChunkNotFoundException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.simplejavamail.outlookmessageparser.OutlookMessageParser;
-import org.simplejavamail.outlookmessageparser.model.OutlookMessage;
+import org.springframework.stereotype.Component;
+import ru.vichukano.crvt_test.Model.Item;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
+@Component
 public class MsgHorizontalParser {
-    private File file;
 
     public MsgHorizontalParser() {
 
     }
 
-    public String parseHtmlMsg(File file) {
-        String html = "";
-        try (InputStream in = new FileInputStream(file)) {
-            byte[] buffer = new byte[in.available()];
-            in.read(buffer, 0, in.available());
-            html = new String(buffer, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return html;
-    }
-
-    public String getPhone(String html) {
+    private String getPhone(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("table");
         int index = -1;
@@ -44,7 +23,7 @@ public class MsgHorizontalParser {
             if (element.text().toLowerCase().contains("телефон".toLowerCase())
                     || element.text().contains("phone")
                     || element.text().contains("номер телефона")
-                    ) {
+            ) {
                 index = element.elementSiblingIndex();
             }
         }
@@ -58,10 +37,11 @@ public class MsgHorizontalParser {
 
     /**
      * Ищем поле с компанией, если нет, то пустая строка.
+     *
      * @param html
      * @return
      */
-    public String getCompany(String html) {
+    private String getCompany(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("table");
         int index = -1;
@@ -70,7 +50,7 @@ public class MsgHorizontalParser {
             if (element.text().toLowerCase().contains("Компания".toLowerCase())
                     || element.text().contains("ЮЛ")
                     || element.text().contains("Фирма")
-                    ) {
+            ) {
                 index = element.elementSiblingIndex();
             }
         }
@@ -85,10 +65,11 @@ public class MsgHorizontalParser {
     /**
      * Вытаскиваем индекс колонки где ФИО и по нему находим значение.
      * Улучшить и убрать второй цикл!!!
+     *
      * @param html
      * @return
      */
-    public String getName(String html) {
+    private String getName(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("table");
         int index = 0;
@@ -97,7 +78,7 @@ public class MsgHorizontalParser {
             if (element.text().contains("Контактное")
                     || element.text().contains("ФИО")
                     || element.text().contains("Ф.И.О")
-                    ) {
+            ) {
                 index = element.elementSiblingIndex();
             }
         }
@@ -109,20 +90,11 @@ public class MsgHorizontalParser {
         return name;
     }
 
-    public String convertHtmlTextToJson(String html) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-        map.put("fio", this.getName(html));
-        map.put("company", this.getCompany(html));
-        map.put("phone", this.getPhone(html));
-        return mapper.writeValueAsString(map);
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
+    public Item convertHtmlTextToObject(String html) {
+        return new Item(
+                this.getPhone(html),
+                this.getName(html),
+                this.getCompany(html)
+        );
     }
 }
