@@ -8,28 +8,31 @@ import org.springframework.stereotype.Component;
 import ru.vichukano.crvt_test.Model.Item;
 
 @Component
-public class MsgVerticalParser {
+public class MsgVerticalParser implements Parser {
 
     public MsgVerticalParser() {
 
     }
 
-    public Item convertHtmlTextToObject(String html) {
+    @Override
+    public Item convertTextToObject(String html) {
         return new Item(
                 this.getPhone(html),
                 this.getName(html),
-                this.getCompany(html)
+                this.getCompany(html),
+                this.getEmail(html)
         );
     }
 
-    private String getPhone(String html) {
+    @Override
+    public String getPhone(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("table");
         String phone = "";
         for (Element element : elements.select("tr").select("td")) {
-            if (element.text().toLowerCase().contains("телефон".toLowerCase())
-                    || element.text().contains("phone")
-                    || element.text().contains("номер телефона")
+            if (element.text().toLowerCase().contains("телефон")
+                    || element.text().toLowerCase().contains("phone")
+                    || element.text().toLowerCase().contains("номер телефона")
             ) {
                 phone = element.nextElementSibling().text();
             }
@@ -37,14 +40,15 @@ public class MsgVerticalParser {
         return phone;
     }
 
-    private String getName(String html) {
+    @Override
+    public String getName(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("table");
         String name = "";
         for (Element element : elements.select("tr").select("td")) {
-            if (element.text().toLowerCase().contains("фио".toLowerCase())
-                    || element.text().contains("имя")
-                    || element.text().contains("лицо")
+            if (element.text().toLowerCase().contains("фио")
+                    || element.text().toLowerCase().contains("ф.и.о.")
+                    || element.text().toLowerCase().contains("лицо")
             ) {
                 name = element.nextElementSibling().text();
             }
@@ -52,19 +56,38 @@ public class MsgVerticalParser {
         return name;
     }
 
-    private String getCompany(String html) {
+    @Override
+    public String getCompany(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("table");
         String company = "";
         for (Element element : elements.select("tr").select("td")) {
-            if (element.text().toLowerCase().contains("юл".toLowerCase())
-                    || element.text().contains("компания")
-                    || element.text().contains("юридическое лицо")
+            if (element.text().toLowerCase().contains("юл")
+                    || element.text().toLowerCase().contains("компания")
+                    || element.text().toLowerCase().contains("юридическое лицо")
+                    || element.text().toLowerCase().contains("ю.л.")
             ) {
                 company = element.nextElementSibling().text();
             }
         }
         return company;
+    }
+
+    @Override
+    public String getEmail(String text) {
+        Document doc = Jsoup.parse(text);
+        Elements elements = doc.select("table");
+        String email = "";
+        for (Element element : elements.select("tr").select("td")) {
+            if (element.text().toLowerCase().contains("email")
+                    || element.text().toLowerCase().contains("mail")
+                    || element.text().toLowerCase().contains("e-mail")
+                    || element.text().toLowerCase().contains("почта")
+            ) {
+                email = element.text();
+            }
+        }
+        return email;
     }
 
 }

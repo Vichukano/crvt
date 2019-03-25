@@ -4,6 +4,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.hsmf.MAPIMessage;
 import org.apache.poi.hsmf.exceptions.ChunkNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,32 +38,34 @@ public class MainController {
 
 
     @PostMapping("/upload/{type}")
-    public Item convertItem(
+    public ResponseEntity<Item> convertItem(
             @RequestParam("file") MultipartFile file,
             @PathVariable("type") int type) {
-        Item item = new Item();
+        Item item;
         String text;
         try (InputStream stream = new ByteArrayInputStream(file.getBytes())) {
             switch (type) {
                 case (1):
                     text = this.getPlaneText(stream);
-                    item = this.plain.convertPlainTextToObject(text);
+                    item = this.plain.convertTextToObject(text);
                     break;
                 case (2):
                     text = this.getHtmlText(stream);
-                    item = this.horizontal.convertHtmlTextToObject(text);
+                    item = this.horizontal.convertTextToObject(text);
                     break;
                 case (3):
                     text = this.getHtmlText(stream);
-                    item = this.vertical.convertHtmlTextToObject(text);
-                default:
+                    item = this.vertical.convertTextToObject(text);
                     break;
+                default:
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } catch (IOException | ChunkNotFoundException e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         item.setId(this.counter.incrementAndGet());
-        return item;
+        return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
     private String getPlaneText(InputStream stream) throws IOException, ChunkNotFoundException {
