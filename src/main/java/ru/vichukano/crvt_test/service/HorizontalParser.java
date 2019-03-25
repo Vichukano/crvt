@@ -9,14 +9,23 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import ru.vichukano.crvt_test.Model.Item;
 
-@Component
-public class MsgHorizontalParser implements Parser {
-    private final Log LOG = LogFactory.getLog(MsgHorizontalParser.class);
+/**
+ * Class for parsing file with horizontal html table.
+ */
+@Component("horizontal")
+public class HorizontalParser implements Parser {
+    private final Log LOG = LogFactory.getLog(HorizontalParser.class);
 
-    public MsgHorizontalParser() {
+    public HorizontalParser() {
 
     }
 
+    /**
+     * Method for parsing phone number.
+     *
+     * @param html text for parsing.
+     * @return phone.
+     */
     @Override
     public String getPhone(String html) {
         Document doc = Jsoup.parse(html);
@@ -36,10 +45,10 @@ public class MsgHorizontalParser implements Parser {
     }
 
     /**
-     * Ищем поле с компанией, если нет, то пустая строка.
+     * Method for parsing company name.
      *
-     * @param html
-     * @return
+     * @param html text for parsing.
+     * @return company.
      */
     @Override
     public String getCompany(String html) {
@@ -62,6 +71,12 @@ public class MsgHorizontalParser implements Parser {
 
     }
 
+    /**
+     * Method for parsing email.
+     *
+     * @param text text for parsing.
+     * @return email.
+     */
     @Override
     public String getEmail(String text) {
         Document doc = Jsoup.parse(text);
@@ -83,6 +98,12 @@ public class MsgHorizontalParser implements Parser {
         return elements.select("tr").get(1).select("td").get(index).text();
     }
 
+    /**
+     * Method for parsing name.
+     *
+     * @param html text for parsing.
+     * @return name.
+     */
     @Override
     public String getName(String html) {
         Document doc = Jsoup.parse(html);
@@ -103,6 +124,12 @@ public class MsgHorizontalParser implements Parser {
         return elements.select("tr").get(1).select("td").get(index).text();
     }
 
+    /**
+     * Method for converting to item object.
+     *
+     * @param html text for parsing.
+     * @return item object.
+     */
     @Override
     public Item convertTextToObject(String html) {
         return new Item(

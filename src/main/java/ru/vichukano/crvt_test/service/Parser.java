@@ -2,6 +2,9 @@ package ru.vichukano.crvt_test.service;
 
 import ru.vichukano.crvt_test.Model.Item;
 
+/**
+ * Interface for parser classes.
+ */
 public interface Parser {
 
     String getPhone(String text);

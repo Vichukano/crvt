@@ -2,6 +2,9 @@ package ru.vichukano.crvt_test.Model;
 
 import java.util.Objects;
 
+/**
+ * Entity of item.
+ */
 public class Item {
     private long id;
     private String phone;

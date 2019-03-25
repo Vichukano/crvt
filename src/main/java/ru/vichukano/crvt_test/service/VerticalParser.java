@@ -7,13 +7,22 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import ru.vichukano.crvt_test.Model.Item;
 
-@Component
-public class MsgVerticalParser implements Parser {
+/**
+ * Class for parsing file with vertical table.
+ */
+@Component("vertical")
+public class VerticalParser implements Parser {
 
-    public MsgVerticalParser() {
+    public VerticalParser() {
 
     }
 
+    /**
+     * Method for converting to item object.
+     *
+     * @param html text for parsing.
+     * @return item object.
+     */
     @Override
     public Item convertTextToObject(String html) {
         return new Item(
@@ -24,6 +33,12 @@ public class MsgVerticalParser implements Parser {
         );
     }
 
+    /**
+     * Method for parsing phone number.
+     *
+     * @param html text for parsing.
+     * @return phone.
+     */
     @Override
     public String getPhone(String html) {
         Document doc = Jsoup.parse(html);
@@ -40,6 +55,12 @@ public class MsgVerticalParser implements Parser {
         return phone;
     }
 
+    /**
+     * Method for parsing company name.
+     *
+     * @param html text for parsing.
+     * @return company.
+     */
     @Override
     public String getName(String html) {
         Document doc = Jsoup.parse(html);
@@ -56,6 +77,12 @@ public class MsgVerticalParser implements Parser {
         return name;
     }
 
+    /**
+     * Method for parsing company name.
+     *
+     * @param html text for parsing.
+     * @return company.
+     */
     @Override
     public String getCompany(String html) {
         Document doc = Jsoup.parse(html);
@@ -73,6 +100,12 @@ public class MsgVerticalParser implements Parser {
         return company;
     }
 
+    /**
+     * Method for parsing email.
+     *
+     * @param text text for parsing.
+     * @return email.
+     */
     @Override
     public String getEmail(String text) {
         Document doc = Jsoup.parse(text);

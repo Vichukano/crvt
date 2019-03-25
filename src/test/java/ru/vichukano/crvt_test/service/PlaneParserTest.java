@@ -10,13 +10,13 @@ import java.io.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class MsgPlaneParserTest {
+public class PlaneParserTest {
     private static String text;
 
     @BeforeClass
     public static void loadTextFromFile() throws ChunkNotFoundException, IOException {
         try (
-                InputStream stream = MsgPlaneParserTest.class
+                InputStream stream = PlaneParserTest.class
                         .getClassLoader()
                         .getResourceAsStream("03 - plain text.msg")
         ) {
@@ -27,25 +27,25 @@ public class MsgPlaneParserTest {
 
     @Test
     public void whenParseNameThenReturnName() {
-        MsgPlaneParser parser = new MsgPlaneParser();
+        PlaneParser parser = new PlaneParser();
         assertThat(parser.getName(text), is("Дмитрий."));
     }
 
     @Test
     public void whenParseCompanyThenReturnCompany() {
-        MsgPlaneParser parser = new MsgPlaneParser();
+        PlaneParser parser = new PlaneParser();
         assertThat(parser.getCompany(text), is("Дмитрий."));
     }
 
     @Test
     public void whenParsePhoneThenReturnPhone() {
-        MsgPlaneParser parser = new MsgPlaneParser();
+        PlaneParser parser = new PlaneParser();
         assertThat(parser.getPhone(text), is("9124467370"));
     }
 
     @Test
     public void whenParseEmailThenReturnEmail() {
-        MsgPlaneParser parser = new MsgPlaneParser();
+        PlaneParser parser = new PlaneParser();
         assertThat(parser.getEmail(text), is("zavarzindv@mail.ru"));
     }
 
