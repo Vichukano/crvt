@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import ru.vichukano.crvt_test.Model.Item;
+import ru.vichukano.crvt_test.domain.Item;
 
 /**
  * Class for parsing file with vertical table.
@@ -27,9 +27,9 @@ public class VerticalParser implements Parser {
     public Item convertTextToObject(String html) {
         return new Item(
                 this.getPhone(html),
+                this.getEmail(html),
                 this.getName(html),
-                this.getCompany(html),
-                this.getEmail(html)
+                this.getCompany(html)
         );
     }
 

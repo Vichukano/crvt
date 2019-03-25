@@ -1,7 +1,7 @@
 package ru.vichukano.crvt_test.service;
 
 import org.springframework.stereotype.Component;
-import ru.vichukano.crvt_test.Model.Item;
+import ru.vichukano.crvt_test.domain.Item;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,9 +30,9 @@ public class PlaneParser implements Parser {
     public Item convertTextToObject(String text) {
         return new Item(
                 this.getPhone(text),
+                this.getEmail(text),
                 this.getName(text),
-                this.getCompany(text),
-                this.getEmail(text)
+                this.getCompany(text)
         );
     }
 

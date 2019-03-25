@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.vichukano.crvt_test.Model.Item;
+import ru.vichukano.crvt_test.domain.Item;
 import ru.vichukano.crvt_test.service.Parser;
 
 import java.io.ByteArrayInputStream;

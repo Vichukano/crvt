@@ -1,6 +1,6 @@
 package ru.vichukano.crvt_test.service;
 
-import ru.vichukano.crvt_test.Model.Item;
+import ru.vichukano.crvt_test.domain.Item;
 
 /**
  * Interface for parser classes.

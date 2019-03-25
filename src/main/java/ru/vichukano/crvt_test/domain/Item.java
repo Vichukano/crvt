@@ -1,4 +1,4 @@
-package ru.vichukano.crvt_test.Model;
+package ru.vichukano.crvt_test.domain;
 
 import java.util.Objects;
 
